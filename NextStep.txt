@@ -17,3 +17,32 @@ NO_AND:
 
     ; Return from subroutine
     RET
+
+
+
+Flow:
+If state_index is already 0, the AND operation is skipped.
+If state_index is not 0, it is masked using the AND operation to ensure it stays within the range 0-3.
+In both cases, the final value of state_index is placed in register A.
+Example Usage:
+Let’s assume the following values for state_index and the behavior of the program:
+
+Initial state_index = 0:
+
+After incrementing, state_index becomes 1.
+Since state_index is not zero, the AND operation with 0x03 is applied, but it doesn't change the value.
+The final value of state_index (which is 1) is loaded into A.
+Initial state_index = 1:
+
+After incrementing, state_index becomes 2.
+Since state_index is not zero, the AND operation with 0x03 is applied, but again, it doesn't change the value.
+The final value of state_index (which is 2) is loaded into A.
+Initial state_index = 3:
+
+After incrementing, state_index becomes 4.
+The AND operation is performed, and the result is 4 AND 0x03 = 0.
+The final value of state_index (which is 0) is loaded into A.
+Initial state_index = 0:
+
+After incrementing, state_index becomes 1.
+The AND operation is skipped, and the value 1 is directly loaded into A.
