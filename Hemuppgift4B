@@ -16,6 +16,40 @@ delay:		;DELAY A
 nextState: 	INC state_index
 		LDA state_index
 		BEQ NO_AND
+		LDA state_index
+		ANDA #$03
+		STA state_index
+		LDA state_index
+		
+NO_AND:		LDA state_index
+		JMP loop
+		ORG $FF
+
+
+
+
+
+
+Gamla versionen:
+
+		ORG 0
+state_vector:	FCB $5,$6,$A,$9
+state_index: 	RMB 1
+
+start:		ORG $20
+		LDA #0
+		STA state_index
+		LDX #state_vector
+
+loop:		LDA $FC
+delay:		;DELAY A
+		LDA state_index
+		LDA A,X
+		STA $FC
+
+nextState: 	INC state_index
+		LDA state_index
+		BEQ NO_AND
 		ANDA #$03
 		
 NO_AND:		LDA state_index
