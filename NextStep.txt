@@ -1,0 +1,19 @@
+NextStep:
+    ; Step 1: Increment state_index by 1
+    ADD state_index, 1              ; state_index = state_index + 1
+
+    ; Step 2: Load state_index into register A
+    LDA state_index                 ; Load state_index into A
+
+    ; Step 3: Check if state_index is 0
+    BEQ NO_AND                      ; If state_index == 0, skip the AND operation
+
+    ; Step 4: Apply bitwise AND with 0x03 (00000011)
+    AND A, 0x03                     ; A = A AND 0x03 (modulo-4)
+
+NO_AND:
+    ; Step 5: Move state_index to register A
+    MOV A, state_index              ; A = state_index (this ensures A always contains the final value)
+
+    ; Return from subroutine
+    RET
