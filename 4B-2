@@ -1,0 +1,42 @@
+		ORG 0
+state_vector:	FCB $5,$6,$A,$9  ; State vector
+state_index:    RMB 1                  ; Reserve one byte for state_index
+delay_value: 	RMB 1
+
+start:          ORG $20
+		LDA #0
+		STA state_index       ; Initialize state_index to 0
+		LDX #state_vector     ; Load address of state_vector into X
+
+loop:           LDA $FC               ; Load the current value from $FC
+		STA delay_value
+		LDA state_index
+		LDA A,X
+		STA $FC
+		JSR delay             ; Call delay subroutine
+
+delay:          PSHA                    ; Save A (accumulator) to the stack
+		PSHC                    ; Save condition codes (CC) to the stack
+
+delay_1:        LDA delay_value                ; Load the delay value from $FC into A
+		DECA                    ; Subtract 1 from A
+		BMI end_delay
+		BHI delay_1             ; If A != 0, continue looping
+
+end_delay	PULC                    ; Restore condition codes (CC) from the stack
+		PULA                    ; Restore A (accumulator) from the stack
+		JMP nextState           ; Return from subroutine
+
+nextState:      INC state_index         ; Increment state_index
+		LDA state_index         ; Load state_index
+		BEQ NO_AND              ; If state_index == 0, skip the AND operation
+		LDA state_index
+		ANDA #$03               ; Apply bitwise AND with 0x03
+		STA state_index         ; Store the result back to state_index
+		LDA state_index         ; Load the updated state_index
+
+NO_AND:         LDA state_index         ; Load state_index again
+		JMP loop                ; Jump back to loop to continue execution
+
+		ORG $FF
+		FCB start               ; Program entry point
