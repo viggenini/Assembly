@@ -1,0 +1,8 @@
+start:	ORG $20
+	LDA $FC
+	COMA
+	STA $FB
+	JMP $20
+
+	ORG $FF
+	FCB $20

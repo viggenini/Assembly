@@ -1,0 +1,7 @@
+start:	ORG $20
+	LDA $FC
+	STA $FB
+	BRA start
+
+	ORG $FF
+	FCB $20

@@ -1,0 +1,25 @@
+	ORG 0
+states:	FCB $5,$6,$A,$9
+index:	RMB 1
+
+start:	ORG $20
+	LDX #states
+	LDA 0,X
+	STA $FC
+
+	LDX #states
+	LDA 1,X
+	STA $FC
+
+	LDX #states
+	LDA 2,X
+	STA $FC
+
+	LDX #states
+	LDA 3,X
+	STA $FC
+	
+	JMP start
+	ORG $FF
+	FCB $20
+	
