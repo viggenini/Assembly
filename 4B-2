@@ -20,7 +20,7 @@ delay:          PSHA                    ; Save A (accumulator) to the stack
 
 delay_1:        LDA delay_value                ; Load the delay value from $FC into A
 		DECA                    ; Subtract 1 from A
-		BMI end_delay
+		BMI end_delay			; Något är fel här
 		BHI delay_1             ; If A != 0, continue looping
 
 end_delay	PULC                    ; Restore condition codes (CC) from the stack
