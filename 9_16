@@ -1,0 +1,31 @@
+		ORG 0
+seg_table:   	FCB $3F,$6,$5B,$4F,$66,$6D,$7C,$7,$7F,$67 	; State vector
+seg_index:    	RMB 1
+seg_display:	RMB 1
+seg_error:	EQU $79
+							;FC=IN FB=OUT	
+start: 		ORG $20
+		LDX #seg_table
+		LDA $FC
+		CMPA #10
+		BCS if_do
+		BRA if_end
+		
+if_do: 		STA seg_index
+		LDA A,X
+		STA $FB
+		JMP start
+		
+if_end:		
+		LDA #$79
+		STA $FB
+end_loop:	LDA $FC
+		CMPA #9
+		BCS start
+		JMP end_loop
+		
+
+ 
+
+		ORG $FF
+		FCB start         			; Program entry point
