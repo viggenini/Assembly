@@ -2,22 +2,21 @@ Inport	EQU	$FC
 Utport	EQU	$FB
 DelayC1	EQU	$5		;Dessa konstanter styr hur lång fördröjning Delay1s orsakar.
 DelayC2	EQU	$2		;Ändra dem eventuellt i labbet så att fördröjnigen blir rimligt lång.
-LED_on	EQU	$FF
-LED_off	EQU	00
+
 
 	ORG	$FF
 	FCB	$20
 
 	ORG	$20
 
-	LDSP	#$20
-Main	LDA	#LED_off
+Main	LDSP	#$20
+	CLR	Utport
+	
 	
 	JSR	ReadAscii
 	SUBA	#$41
-	BMI	errorLoop
 	CMPA	#26
-	BGT	errorLoop
+	BHS	errorLoop
 	LSLA
 	PSHA	
 	LDX	#MorseCode
@@ -26,28 +25,32 @@ Main	LDA	#LED_off
 	PULA
 	INCA
 	LDA	A,X
-L3	JSR	BlinkLight
+
+L3	LDY	Count
+	BEQ	Main
+	JSR	BlinkLight
 	LSLA	
 	DEC	Count
-	BNE	L3
-	JMP	Main
+	JMP	L3
+	
 
 
 
 errorLoop:
-	LDY	#$AA
-	STY	Utport
-	BRA	errorLoop
-	RTS
+	COM	Utport
+	CLR	Utport
+	JMP	errorLoop
+	
+	
 
 ReadAscii:
-L1	LDA	Inport
+L1	LDA	$FC
 	BITA	#%00000001
-	BHI	AL1
+	BNE	L1
 
-L2	LDA	Inport
+L2	LDA	$FC
 	BITA	#%00000001
-	BEQ	AL2
+	BEQ	L2
 
 	LSRA
 	RTS
@@ -59,19 +62,17 @@ L2	LDA	Inport
 	
 BlinkLight:
 	PSHA
-	PSHX
-	LDX	#LED_on
-	STX	Utport
+	COM	Utport
 	BITA	#%10000000
 
-	BEQ	L2
+	BEQ	L2_Blink
 	JSR	Delay1s
 	JSR	Delay1s
 	JSR	Delay1s
-L2	JSR	Delay1s
-	LDX	#LED_off
-	STX	Delay1s
-	PULX
+L2_Blink
+	JSR	Delay1s
+	CLR	Utport
+	JSR	Delay1s
 	PULA
 	RTS
 
@@ -132,13 +133,6 @@ MorseCode:
 	
 	
 	
-	Assembling: 'lab4-4.sflisp'
-C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (46) Error: Undefined symbol 'AL1'
-C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (48) Error: Multiple definition
-C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (50) Error: Undefined symbol 'AL2'
-C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (60) Error: Phase error between passes
-C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (71) Error: Multiple definition
--- 5 error(s).
-
+	
 	
 	
