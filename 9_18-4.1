@@ -1,0 +1,29 @@
+		ORG 0
+seg_table:     	FCB $3F,$6,$5B,$4F,$66,$6D,$7C,$7,$7F,$67 	; State vector
+seg_index:    	RMB 1
+seg_display:	  RMB 1
+seg_error:	    EQU $79
+							              ;FC=IN FB=OUT	
+start: 		      ORG $20
+		            LDX #seg_table
+		            LDA $FC
+	            	CMPA #10    ; Jämför A med 10
+		            BCS if_do   ; Om är mindre än 10 gå till if_do
+		            BRA if_end  ; Om A är större än 10 gå till if_end
+		
+if_do: 		      STA seg_index
+		            LDA A,X
+		            STA $FB
+		            JMP start
+		
+if_end:		
+		            LDA #$79    ; Laddar felkoden som visar E till A
+		            STA $FB     ; Lägger in värdet för felkoden i displayen. 
+              
+end_loop:	      LDA $FC     ; Loopar igenom och kollar efter förändringar i input. Om input är mindre än 10 går vi tillbaka till start
+		            CMPA #9
+		            BCS start
+		            JMP end_loop
+	
+		            ORG $FF
+		            FCB start         			; Program entry point
