@@ -26,5 +26,5 @@ Delay_loop:
                 RTS                           ; Returnera från subrutinen
 
 
-                ORG                 $FF       ; Vektor för startadress
+                ORG                 $FF       ; 
                 FCB                 start     ; Startadress för programmet
