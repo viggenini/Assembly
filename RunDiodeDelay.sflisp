@@ -1,30 +1,30 @@
-; Symbolfält     Mnemonisk/direktiv  Operand
+; SymbolfÃ¤lt     Mnemonisk/direktiv  Operand
 
-LED:            EQU                 $FB       ; Adress för ljusdiodrampen
-start:          ORG                 $20       ; Startadress för programmet
+LED:            EQU                 $FB       ; Adress fÃ¶r ljusdiodrampen
+start:          ORG                 $20       ; Startadress fÃ¶r programmet
                 LDSP                #$20      ; Initiera stackpekaren
                 JSR                 main      ; Anropa huvudprogrammet
-                JMP                 start     ; Återgå till start för oändlig loop
+                JMP                 start     ; Ã…tergÃ¥ till start fÃ¶r oÃ¤ndlig loop
 
 main:                                         ; Huvudprogrammet
-                LDA                 #$01      ; Startvärde: tänd första dioden
+                LDA                 #$01      ; StartvÃ¤rde: tÃ¤nd fÃ¶rsta dioden
 main_loop:     
-                STA                 LED       ; Skicka värdet till ljusdiodrampen
-                JSR                 Delay     ; Anropa fördröjningssubrutin
-                LSLA                          ; Skifta värdet vänster (till nästa diod)
-                BNE                 main_loop ; Fortsätt tills alla dioder är släckta
-                JMP                 main      ; Starta om huvudprogrammet
+                STA                 LED       ; Skicka vÃ¤rdet till ljusdiodrampen
+                JSR                 Delay     ; Anropa fÃ¶rdrÃ¶jningssubrutin
+                LSLA                          ; Skifta vÃ¤rdet vÃ¤nster (till nÃ¤sta diod)
+                BNE                 main_loop ; FortsÃ¤tt tills alla dioder Ã¤r slÃ¤ckta
+                JMP                 main      ; Starta om
 Delay:                                      
-                PSHA                          ; Spara ackumulatorns värde
+                PSHA                          ; Spara ackumulatorns vÃ¤rde
                 PSHC                          ; Spara flaggstatus
-                LDA                 #$04      ; Initial fördröjningsräknare (kortare fördröjning)
+                LDA                 #$04      ; Ã„ndra till mindre nummer fÃ¶r kortare Delay
 Delay_loop:     
                 DECA                          ; Minska A med 1
 		BNE                 Delay_loop ; Upprepa loopen tills A = 0
-                PULC                          ; Återställ flaggstatus
-                PULA                          ; Återställ ackumulatorns värde
-                RTS                           ; Returnera från subrutinen
+                PULC                          ; Ã…terstÃ¤ll flaggstatus
+                PULA                          ; Ã…terstÃ¤ll ackumulatorns vÃ¤rde
+                RTS                           ; Returnera frÃ¥n subrutinen
 
 
-                ORG                 $FF       ; Vektor för startadress
-                FCB                 start     ; Startadress för programmet
+                ORG                 $FF       ; Vektor fÃ¶r startadress
+                FCB                 start     ; Startadress fÃ¶r programmet
