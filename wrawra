@@ -131,7 +131,7 @@ MorseCode:
 	FCB	4,%10110000 ;'Y'
 	FCB	4,%11000000 ;'Z'
 	
-	
+	; Koden exekverar en gång, sedan fastnar den i en loop..
 	
 	
 	
