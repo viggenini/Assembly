@@ -1,0 +1,144 @@
+Inport	EQU	$FC
+Utport	EQU	$FB
+DelayC1	EQU	$5		;Dessa konstanter styr hur lång fördröjning Delay1s orsakar.
+DelayC2	EQU	$2		;Ändra dem eventuellt i labbet så att fördröjnigen blir rimligt lång.
+LED_on	EQU	$FF
+LED_off	EQU	00
+
+	ORG	$FF
+	FCB	$20
+
+	ORG	$20
+
+	LDSP	#$20
+Main	LDA	#LED_off
+	
+	JSR	ReadAscii
+	SUBA	#$41
+	BMI	errorLoop
+	CMPA	#26
+	BGT	errorLoop
+	LSLA
+	PSHA	
+	LDX	#MorseCode
+	LDA	A,X
+	STA	Count
+	PULA
+	INCA
+	LDA	A,X
+L3	JSR	BlinkLight
+	LSLA	
+	DEC	Count
+	BNE	L3
+	JMP	Main
+
+
+
+errorLoop:
+	LDY	#$AA
+	STY	Utport
+	BRA	errorLoop
+	RTS
+
+ReadAscii:
+L1	LDA	Inport
+	BITA	#%00000001
+	BHI	AL1
+
+L2	LDA	Inport
+	BITA	#%00000001
+	BEQ	AL2
+
+	LSRA
+	RTS
+
+
+
+
+
+	
+BlinkLight:
+	PSHA
+	PSHX
+	LDX	#LED_on
+	STX	Utport
+	BITA	#%10000000
+
+	BEQ	L2
+	JSR	Delay1s
+	JSR	Delay1s
+	JSR	Delay1s
+L2	JSR	Delay1s
+	LDX	#LED_off
+	STX	Delay1s
+	PULX
+	PULA
+	RTS
+
+	
+	
+; Orsakar en fördröjning på ungefär 1s i simulatorn (vid snabb exekveringshastighet)
+; Ändrar inga register
+Delay1s:
+	PSHA
+	PSHX
+	PSHC
+	LDX	#DelayC2
+Delay1s_loop2:
+	LDA	#DelayC1
+Delay1s_loop:
+	DECA
+	BNE	Delay1s_loop
+	LEAX	-1,X
+	CMPX	#0
+	BNE	Delay1s_loop2
+	PULC
+	PULX
+	PULA
+	RTS
+
+; Data - Variabler
+Count:
+	RMB	1
+
+; Data - Konstanter
+MorseCode:
+	FCB	2,%01000000 ;'A'
+	FCB	4,%10000000 ;'B'
+	FCB	4,%10100000 ;'C'
+	FCB	3,%10000000 ;'D'
+	FCB	1,%00000000 ;'E'
+	FCB	4,%00100000 ;'F'
+	FCB	3,%11000000 ;'G'
+	FCB	4,%00000000 ;'H'
+	FCB	2,%00000000 ;'I'
+	FCB	4,%01110000 ;'J'
+	FCB	3,%10100000 ;'K'
+	FCB	4,%01000000 ;'L'
+	FCB	2,%11000000 ;'M'
+	FCB	2,%10000000 ;'N'
+	FCB	3,%11100000 ;'O'
+	FCB	4,%01100000 ;'P'
+	FCB	4,%11010000 ;'Q'
+	FCB	3,%01000000 ;'R'
+	FCB	3,%00000000 ;'S'
+	FCB	1,%10000000 ;'T'
+	FCB	3,%00100000 ;'U'
+	FCB	4,%00010000 ;'V'
+	FCB	3,%01100000 ;'W'
+	FCB	4,%10010000 ;'X'
+	FCB	4,%10110000 ;'Y'
+	FCB	4,%11000000 ;'Z'
+	
+	
+	
+	Assembling: 'lab4-4.sflisp'
+C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (46) Error: Undefined symbol 'AL1'
+C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (48) Error: Multiple definition
+C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (50) Error: Undefined symbol 'AL2'
+C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (60) Error: Phase error between passes
+C:\Users\jespersw\Documents\FLISP-Filer\lab4-4.sflisp (71) Error: Multiple definition
+-- 5 error(s).
+
+	
+	
