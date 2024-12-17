@@ -1,0 +1,30 @@
+; Symbolfält     Mnemonisk/direktiv  Operand
+
+LED:            EQU                 $FB       ; Adress för ljusdiodrampen
+start:          ORG                 $20       ; Startadress för programmet
+                LDSP                #$20      ; Initiera stackpekaren
+                JSR                 main      ; Anropa huvudprogrammet
+                JMP                 start     ; Återgå till start för oändlig loop
+
+main:                                         ; Huvudprogrammet
+                LDA                 #$01      ; Startvärde: tänd första dioden
+main_loop:     
+                STA                 LED       ; Skicka värdet till ljusdiodrampen
+                JSR                 Delay     ; Anropa fördröjningssubrutin
+                LSLA                          ; Skifta värdet vänster (till nästa diod)
+                BNE                 main_loop ; Fortsätt tills alla dioder är släckta
+                JMP                 main      ; Starta om huvudprogrammet
+
+Delay:                                        ; Fördröjningssubrutin
+                PSHA                          ; Spara ackumulatorns värde
+                PSHC                          ; Spara flaggstatus
+                LDA                 #$FF      ; Initial fördröjningsräknare (255)
+Delay_loop:     
+                DECA                          ; Minska räknaren med 1
+                BNE                 Delay_loop ; Upprepa loopen tills A = 0
+                PULC                          ; Återställ flaggstatus
+                PULA                          ; Återställ ackumulatorns värde
+                RTS                           ; Returnera från subrutinen
+
+                ORG                 $FF       ; Vektor för startadress
+                FCB                 start     ; Startadress för programmet
